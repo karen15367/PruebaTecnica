@@ -198,5 +198,43 @@ describe("CharacterRepository", () => {
 
             await expect(client.fetchAllCharacters()).rejects.toThrow('Network Error');
         });
+        //nuevos tests
+        it('debería manejar correctamente cuando la api no devuelve personajes', async () => {
+            const emptyResponse: CharacterResponse = {
+                info: {
+                    count: 0,
+                    pages: 1,
+                    next: null,
+                    prev: null
+                },
+                results: []
+            };
+
+            (fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: async () => emptyResponse
+            });
+
+            const result = await client.fetchAllCharacters();
+            expect(result).toHaveLength(0);
+            expect(result).toEqual([]);
     });
+    it('debería manejar error 404 correctamente', async () => {
+        (fetch as jest.Mock).mockResolvedValue({
+            ok: false,
+            status: 404,
+            json: async () => ({ error: 'Not Found' })
+        });
+        await expect(client.fetchAllCharacters()).rejects.toThrow('Error fetching characters: 404');
+    });
+
+    it('debería manejar error 403', async () => {
+        (fetch as jest.Mock).mockResolvedValueOnce({
+            ok: false,
+            status: 403,
+            statusText: 'Forbidden',
+        });
+        await expect(client.fetchAllCharacters()).rejects.toThrow('Error fetching characters: 403');
+    });
+});
 });
