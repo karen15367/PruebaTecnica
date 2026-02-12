@@ -5,7 +5,7 @@ export interface Character {
     gender: string;
 }
 
-export interface CharacterResponse {
+export interface ApiCharacter {
     id: number;
     name: string;
     status: string;
@@ -26,14 +26,14 @@ export interface CharacterResponse {
     created: string;
 }
 
-export interface APIResponse{
+export interface CharacterResponse {
     info: {
         count: number;
         pages: number;
         next: string | null;
         prev: string | null;
     };
-    results: CharacterResponse[];
+    results: ApiCharacter[];
 }
 
 export interface ProcessedResponse {
