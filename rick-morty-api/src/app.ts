@@ -3,19 +3,22 @@ import { CharacterController } from './controllers/CharacterController';
 import { CharacterService } from './services/CharacterService';
 import { CharacterRepository } from './repositories/CharacterRepository';
 
-const app = express();
-const port = 3000;
+//const app = express();
+//const port = 3000;
 
-app.use(express.json());
+//app.use(express.json());
 
-//dependencias
-const repository = new CharacterRepository();
-const service = new CharacterService(repository);
-const controller = new CharacterController(service);
+export function createApp() {
+    //dependencias
+    const repository = new CharacterRepository();
+    const service = new CharacterService(repository);
+    const controller = new CharacterController(service);
 
-//endpoint para obtener personajes vivos
-app.get('/characters/ProcessedCharacters', controller.getAliveCharacters.bind(controller));
+    const app = express();
+    app.use(express.json());
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/characters/ProcessedCharacters`);
-});
+    //ruta
+    app.get('/characters/ProcessedCharacters', controller.getAliveCharacters.bind(controller));
+
+    return app;
+}
